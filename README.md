@@ -40,20 +40,7 @@
 
 </div>
 <div align="center">
-<img src="rv1.PNG" alt="Revenue and Visit">
-</div>
-<br>
-<br>
 
-<style>
-hr { 
-  display: block;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-  margin-left: auto;
-  margin-right: auto;
-  border-style: inset;
-  border-width: 2px;
-} 
-</style>
+<img src="https://github.com/cdchopitea/Marketing_QA/blob/master/rv1.png" alt="Revenue and Visit">
 #### <i>Figure A</i>: There appears to be no linear relationship between revenues and website visits.
+</div>
