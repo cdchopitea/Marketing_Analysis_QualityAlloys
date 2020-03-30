@@ -1,5 +1,5 @@
 <div align="center">
-# <b>Web Analytics at Quality Alloys, Inc: Marketing their business and increasing sales </b>
+<h1> <b>Web Analytics at Quality Alloys, Inc: Marketing their business and increasing sales </b> </h1>
 </div>
 <br>
 <br>
