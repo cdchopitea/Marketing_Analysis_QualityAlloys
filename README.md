@@ -37,7 +37,6 @@
 #### 6) Inquiries, which are not happening through the website, are not resulting in sales. This means that the sales team are not closing sales after a potential customer has reach out. Offering new training for the sales team will be imperative for increasing sales.
 <br>
 
-#### <i>Figure A</i>: There appears to be no linear relationship between revenues and website visits.
 
 </div>
 <div align="center">
@@ -57,4 +56,4 @@ hr {
   border-width: 2px;
 } 
 </style>
-<hr>
+#### <i>Figure A</i>: There appears to be no linear relationship between revenues and website visits.
