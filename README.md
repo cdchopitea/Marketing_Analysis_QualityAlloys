@@ -42,5 +42,6 @@
 <div align="center">
 
 <img src="https://github.com/cdchopitea/Marketing_QA/blob/master/rv1.png" alt="Revenue and Visit">
+<br>
 #### <i>Figure A</i>: There appears to be no linear relationship between revenues and website visits.
 </div>
