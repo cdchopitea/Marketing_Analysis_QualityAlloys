@@ -4,8 +4,8 @@
 <br>
 <br>
 <div align="justify">
-### <b>Executive Summary:</b>
-### <i>Company background </i>
+<h2><b>Executive Summary:</b> </h2>
+<h3> <i>Company background </i><h3>
 
 #### Quality Alloys (QA) is a small to medium size distributor that provides different types of alloys to various manufacturers. QA’s major customers are small companies that need specific alloys for various operations. These customers tend not to inventory, they typically purchase what they need for a specific job, making it hard for QA to predict future purchases.  QA is a well stablished company in its niche market: it has expertise in suppling different grade of alloys; it sells in small quantities; cuts materials for  user-specified size:, and QA ships items in stock the same or next day, making them a go-to solution for small companies which may find it difficult in finding the right supplier for their needs and often cannot buy directly from the mills.
 
