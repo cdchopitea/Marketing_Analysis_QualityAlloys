@@ -22,7 +22,7 @@
 #### At first glance seems that potential customers are visiting their website. From May 25, 2008 to August 29, 2009 an average of 150 people visited their website daily. Given that they are a small to medium size company, the website seems to be yielding some interest. It was also observed that the promotional period also drove traffic to the website. However, after analyzing the data provided by QA, it can be determining that even as it appears that the website is sparkling interest, visits are not translating into revenue (please see Figure A and Raw Analysis section for further details). Currently, sales are mainly driven by pounds sold and visit to the website seem to not have an impact on sales. As well, the analysis demonstrated that the increased in visits during the promotional period did not directly translated into revenue (please see Analysis section for further details). 
 
 ### <i> Recommendations </i> 
-###### <i>For detailed explanation of the recommendation please see Conclusion and Recommendation section of the report. </i>
+###### <i>For detailed explanation of the recommendation please see Conclusion and Recommendation see full report <a href="https://rpubs.com/cduqueRP/592207">here</a>. </i>
 
 #### 1)	No more resources should be spent printing and mailing brochures. 
 
