@@ -1,0 +1,619 @@
+---
+title: "Quality Alloys Report"
+author: "Carolina Duque Chopitea"
+date: "12/16/2019"
+output: html_document
+---
+<br>
+<br>
+<br>
+<br>
+<br>
+<div align="center">
+# <b>Web Analytics at Quality Alloys, Inc: Marketing their business and increasing sales </b>
+</div>
+<br>
+<br>
+<div align="justify">
+### <b>Executive Summary:</b>
+### <i>Company background </i>
+
+#### Quality Alloys (QA) is a small to medium size distributor that provides different types of alloys to various manufacturers. QA’s major customers are small companies that need specific alloys for various operations. These customers tend not to inventory, they typically purchase what they need for a specific job, making it hard for QA to predict future purchases.  QA is a well stablished company in its niche market: it has expertise in suppling different grade of alloys; it sells in small quantities; cuts materials for  user-specified size:, and QA ships items in stock the same or next day, making them a go-to solution for small companies which may find it difficult in finding the right supplier for their needs and often cannot buy directly from the mills.
+
+#### Currently, QA markets its products through direct mail, advertising in trade magazines and listing on web portals. In 2008, to extend its marketing reach the company established a website. The website aims at driving new sales, make products and contact information available, and add legitimacy to QA’s brand. The website is also seen as a tool to reach out to more customers in the US, Europe and Asia. The website does not have a “shopping cart” but it allows for potential customers to submit inquiries, this often makes it hard to determine the value of the website. In addition, in an attempt to increase sales, the company invested $25k in brochures, providing an overview of the company’s products and services that were distributed to potential customers in mid-December. 
+
+#### Currently, most people have been reaching their website through Internet Explorer and using google as their main search engine. The top referring site is ‘googleads.g.doubleclick.net’ which tops GlobalSpec and ThomasNet.com, industrial product web portals where QA have listings. As well, most of their visits are from people located in South America followed by North America.
+
+### <i>Business problem </i>
+
+#### QA needs support in measuring the value added of their website. In other words, QA wants to understand if the investment in the website is yielding greater revenues and increasing visibility of the company.
+
+#### QA provided data about their website, financials and demographics. This data was used to understand the performance of the website as an advertising channel and driver of sales. In turn the insight derived from the analysis can help determine which marketing channels are worth promoting, and which need restructuring or should be abandoned. Therefore, the goal of this analysis is to provide recommendations as how they might best market their business with an aim towards improving sales.
+
+#### At first glance seems that potential customers are visiting their website. From May 25, 2008 to August 29, 2009 an average of 150 people visited their website daily. Given that they are a small to medium size company, the website seems to be yielding some interest. It was also observed that the promotional period also drove traffic to the website. However, after analyzing the data provided by QA, it can be determining that even as it appears that the website is sparkling interest, visits are not translating into revenue (please see Figure A and Raw Analysis section for further details). Currently, sales are mainly driven by pounds sold and visit to the website seem to not have an impact on sales. As well, the analysis demonstrated that the increased in visits during the promotional period did not directly translated into revenue (please see Analysis section for further details). 
+
+### <i> Recommendations </i> 
+###### <i>For detailed explanation of the recommendation please see Conclusion and Recommendation section of the report. </i>
+
+#### 1)	No more resources should be spent printing and mailing brochures. 
+
+#### 2)	An A/B test that includes a “shopping cart” can be used to test if a direct check out can increase sales. 
+
+#### 3)	The investment currently done in referring sites and search engines should be preserved, particularly for refering stes like  GlobalSpec and ThomasNet, sites that particularly target customers looking for alloys.
+
+#### 4) To target the Asian market (as desired), QA should advertise on search engines such as Baidu or other search engines that are used in the region, as currently most searches are done from engines not used in the region.
+
+#### 5)	Engage in an online/email promotional campaign particularly targeting Asia customers to increase web traffic and sales from this region. 
+
+#### 6) Inquiries, which are not happening through the website, are not resulting in sales. This means that the sales team are not closing sales after a potential customer has reach out. Offering new training for the sales team will be imperative for increasing sales.
+<br>
+
+#### <i>Figure A</i>: There appears to be no linear relationship between revenues and website visits.
+
+</div>
+<div align="center">
+<img src="rv1.PNG" alt="Revenue and Visit">
+</div>
+<br>
+<br>
+
+<style>
+hr { 
+  display: block;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  margin-left: auto;
+  margin-right: auto;
+  border-style: inset;
+  border-width: 2px;
+} 
+</style>
+<hr>
+
+
+```{r setup, include=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
+
+library(readxl)
+library(plotly)
+library(ggplot2)
+library(sqldf)
+library(dplyr)
+library(stats)
+library(graphics)
+library(gsubfn)
+library(proto)
+library(RSQLite)
+library(base)
+library(formattable)
+
+file <- "Web Analytics Case Student Spreadsheet.xls"
+
+web1 <- read_excel(file, sheet = 1, col_names = TRUE)
+web2 <- read_excel(file, sheet = 2, col_names = TRUE)
+web3 <- read_excel(file, sheet = 3, col_names = TRUE)
+web4 <- read_excel(file, sheet = 4, col_names = TRUE)
+web5 <- read_excel(file, sheet = 5, col_names = TRUE)
+# web1 and web2 share a common variable -> join on primary key (one to one relationship)
+web1 <- merge(web1,web2, by = "Week(2008-2009)", sort = FALSE)
+
+```
+## <b>Raw Anaysis </b>
+<br>
+
+## <b>Analyzing the value of QA’s website - web and non-web metrics </b>
+
+### <i>Data Quality </i>
+
+#### QA provided a dataset that covers the period from May 25, 2008 to August 29, 2009, only one dataset with information about pounds sold covers a period from January 2005 to mid-July 2010. Overall, there were no major issues with the data, including no missing values and therefore no imputations needed to be carried out. One issue with the data includes the fact that records do not indicate if inquiries were generated through the website or offline. However, further analysis of the data will help derive insights on whether there is a relationship between website visits and inquiries. 
+
+#### R was used as the main tool to conduct statistical analysis. In addition, most of the analysis divided the data into four periods, these are: the Initial Period from May 25 to August 23, 2008, the Pre-promotion from August 24 2008 to Jan 24 2009, Promotion Period from January 25 to May 16, 2009 and Post Promotion from May 17 to August 29, 2009.
+
+### <i>Descriptive statistics</i>
+
+#### To have a better understanding of our data, its distribution and measures of central tendency, a basic statistical analysis of visits to QA website, revenue, profit and pounds sold over time was conducted.
+
+#### Firstly, a bar chart with Unique Visits and Weeks was created (Figure 1). It can be observed that during the promotional period unique visits to the website increased, decreasing afterward to a lower level than the initial and pre-promotion period. Revenue and pounds sold in turn seem to have a constant pattern over time, appearing unaffected by the promotional period (see also Figure 2, Figure 3 and Figure 4).
+
+#### <b>Figure 1: Unique Visits Over Time </b>
+```{r vis_time, include=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
+
+plot_uv <- ggplot(web1, aes(`Week(2008-2009)`, `Unique.Visits`)) +
+  geom_bar(stat="identity", width = 0.7, fill="steelblue2") +
+  labs(title="Unique Visits over Time") +
+  theme(axis.text.x = element_text(angle=90, vjust=0.8), plot.title = element_text(face = "bold"))
+plot_uv
+
+
+```
+
+#### <b>Figure 2: Revenue Over Time </b>
+```{r rev_time, include=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
+
+plot_rev <- ggplot(web1, aes(`Week(2008-2009)`, `Revenue`)) +
+  geom_bar(stat="identity", width = 0.7, fill="steelblue2") +
+  labs(title="Revenue over Time") +
+  theme(axis.text.x = element_text(angle=90, vjust=0.8), plot.title = element_text(face = "bold"))
+plot_rev
+```
+
+#### <b>Figure 3: Profit Over Time </b>
+
+```{r pro_time, include=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
+plot_prof <- ggplot(web1, aes(`Week(2008-2009)`, `Profit`)) +
+  geom_bar(stat="identity", width = 0.7, fill="steelblue2") +
+  labs(title="Profits over Time") +
+  theme(axis.text.x = element_text(angle=90, vjust=0.8), plot.title = element_text(face = "bold"))
+plot_prof
+```
+
+
+#### <b> Figure 4: Pounds Sold Over Time </b>
+
+```{r lbs_time, include=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
+
+plot_lbs <- ggplot(web1, aes(`Week(2008-2009)`, `Lbs.Sold`)) +
+  geom_bar(stat="identity", width = 0.7, fill="steelblue2") +
+  labs(title="Pounds Sold over Time") +
+  theme(axis.text.x = element_text(angle=90, vjust=0.8), plot.title = element_text(face = "bold"))
+plot_lbs
+```
+
+## <i>Evaluating Sucess of Various Periods </i> 
+
+#### Measures of central tendency where also observed for each of the four period for the variables visits (Visits), unique visits (Unique.Visits) revenue (Revenue), profits (Profit) and pounds sold (Lbs.Sold) (see Table 1, Table 2, Table 3, Table 4 in Appendix). It can be observed that visits to the website peeked during the promotional period with a maximum of 3726 per week. Revenue per week in turned peek during the pre-promotional period (951,216) and reach a minimum during the post-promotional period (133,967) and pound sold also reach the highest during a Pre-promotional week. This early insights indicate than even if the promotion increases visits to QA website, neither the promotion nor the visit increase pounds sold and revenue. 
+
+
+#### <b> Table 1: Initial Period Descriptive Statistics --->  May 25 to August 23 </b> 
+
+```{r ip, echo=FALSE, message=FALSE, warning=FALSE}
+
+initial <- web1[1:13, ]
+
+
+#Initial Period table
+
+initial_vis <- c(min(initial$Visits), 
+                  max(initial$Visits), 
+                  mean(initial$Visits), 
+                  median(initial$Visits),
+                  sd(initial$Visits))
+
+initial_uv <- c(min(initial$Unique.Visits), 
+                  max(initial$Unique.Visits), 
+                  mean(initial$Unique.Visits), 
+                  median(initial$Unique.Visits),
+                  sd (initial$Unique.Visits))
+
+initial_rev <- c(min(initial$Revenue), 
+                  max(initial$Revenue), 
+                  mean(initial$Revenue), 
+                  median(initial$Revenue),
+                  sd(initial$Revenue))
+
+initial_prof <- c(min(initial$Profit), 
+                  max(initial$Profit), 
+                  mean(initial$Profit), 
+                  median(initial$Profit),
+                  sd(initial$Profit))
+
+initial_lbs <- c(min(initial$Lbs.Sold), 
+                  max(initial$Lbs.Sold), 
+                  mean(initial$Lbs.Sold), 
+                  median(initial$Lbs.Sold),
+                  sd(initial$Lbs.Sold))
+
+initial_chart <- data.frame(Measure = c("Min.", "Max.", "Mean", "Median", "Std. div."),
+                          Visits = round(initial_vis, 2),
+                          Unique_Visits = round(initial_uv,2),
+                          Revenue = round(initial_rev,2),
+                          Profit = round(initial_prof,2),
+                          Lbs_Sold = round(initial_lbs,2))
+
+formattable(initial_chart, align = c('l','c','c','c','c','c'), list(`Measure` = formatter(
+  "span", style = ~ style(font.weight = "bold"))))
+
+```
+
+#### <b>  Table 2: Pre-promotion Period Descriptive Statistics --->  August 24 to January 24 </b>
+
+```{r pre_p, echo=FALSE, message=FALSE, warning=FALSE}
+
+pre_promo <- web1[14:35, ]
+
+#Pre-promotion Period table
+
+pre_vis <- c(min(pre_promo$Visits), 
+                  max(pre_promo$Visits), 
+                  mean(pre_promo$Visits), 
+                  median(pre_promo$Visits),
+                  sd(pre_promo$Visits))
+
+pre_uv <- c(min(pre_promo$Unique.Visits), 
+                  max(pre_promo$Unique.Visits), 
+                  mean(pre_promo$Unique.Visits), 
+                  median(pre_promo$Unique.Visits),
+                  sd (pre_promo$Unique.Visits))
+
+pre_rev <- c(min(pre_promo$Revenue), 
+                  max(pre_promo$Revenue), 
+                  mean(pre_promo$Revenue), 
+                  median(pre_promo$Revenue),
+                  sd(pre_promo$Revenue))
+
+pre_prof <- c(min(pre_promo$Profit), 
+                  max(pre_promo$Profit), 
+                  mean(pre_promo$Profit), 
+                  median(pre_promo$Profit),
+                  sd(pre_promo$Profit))
+
+pre_lbs <- c(min(pre_promo$Lbs.Sold), 
+                  max(pre_promo$Lbs.Sold), 
+                  mean(pre_promo$Lbs.Sold), 
+                  median(pre_promo$Lbs.Sold),
+                  sd(pre_promo$Lbs.Sold))
+
+pre_promo_chart <- data.frame(Measure = c("Min.", "Max.", "Mean", "Median", "Std. div."),
+                          Visits = round(pre_vis, 2),
+                          Unique_Visits = round(pre_uv,2),
+                          Revenue = round(pre_rev,2),
+                          Profit = round(pre_prof,2),
+                          Lbs_Sold = round(pre_lbs,2))
+
+formattable(pre_promo_chart, align = c('l','c','c','c','c','c'), list(`Measure` = formatter(
+  "span", style = ~ style(font.weight = "bold"))))
+
+```
+#### <b>Table 3: Promotion Period Descriptive Statistics --->  January 25 to May 16 </b>
+
+```{r promo_p, echo=FALSE, message=FALSE, warning=FALSE}
+
+promo <- web1[36:51, ]
+
+#Promotion Period table
+
+pro_vis <- c(min(promo$Visits), 
+                  max(promo$Visits), 
+                  mean(promo$Visits), 
+                  median(promo$Visits),
+                  sd(promo$Visits))
+
+pro_uv <- c(min(promo$Unique.Visits), 
+                  max(promo$Unique.Visits), 
+                  mean(promo$Unique.Visits), 
+                  median(promo$Unique.Visits),
+                  sd(promo$Unique.Visits))
+
+pro_rev <- c(min(promo$Revenue), 
+                  max(promo$Revenue), 
+                  mean(promo$Revenue), 
+                  median(promo$Revenue),
+                  sd(promo$Revenue))
+
+pro_prof <- c(min(promo$Profit), 
+                  max(promo$Profit), 
+                  mean(promo$Profit), 
+                  median(promo$Profit),
+                  sd(promo$Profit))
+
+pro_lbs <- c(min(promo$Lbs.Sold), 
+                  max(promo$Lbs.Sold), 
+                  mean(promo$Lbs.Sold), 
+                  median(promo$Lbs.Sold),
+                  sd(promo$Lbs.Sold))
+
+promo_chart <- data.frame(Measure = c("Min.", "Max.", "Mean", "Median", "Std. div."),
+                          Visits = round(pro_vis, 2),
+                          Unique_Visits = round(pro_uv,2),
+                          Revenue = round(pro_rev,2),
+                          Profit = round(pro_prof,2),
+                          Lbs_Sold = round(pro_lbs,2))
+
+formattable(promo_chart, align = c('l','c','c','c','c','c'), list(`Measure` = formatter(
+  "span", style = ~ style(font.weight = "bold"))))
+
+```
+#### <b> Table 4:Post-promotion Period Descriptive Statistics --->  May 17 to August 29 </b> 
+
+```{r pos_promo_p, echo=FALSE, message=FALSE, warning=FALSE}
+
+pos_promo <- web1[52:nrow(web1), ]
+
+#Post-promotion Period table
+
+pos_vis <- c(min(pos_promo$Visits), 
+                  max(pos_promo$Visits), 
+                  mean(pos_promo$Visits), 
+                  median(pos_promo$Visits),
+                  sd(pos_promo$Visits))
+
+pos_uv <- c(min(pos_promo$Unique.Visits), 
+                  max(pos_promo$Unique.Visits), 
+                  mean(pos_promo$Unique.Visits), 
+                  median(pos_promo$Unique.Visits),
+                  sd(pos_promo$Unique.Visits))
+
+pos_rev <- c(min(pos_promo$Revenue), 
+                  max(pos_promo$Revenue), 
+                  mean(pos_promo$Revenue), 
+                  median(pos_promo$Revenue),
+                  sd(pos_promo$Revenue))
+
+pos_prof <- c(min(pos_promo$Profit), 
+                  max(pos_promo$Profit), 
+                  mean(pos_promo$Profit), 
+                  median(pos_promo$Profit),
+                  sd(pos_promo$Profit))
+
+pos_lbs <- c(min(pos_promo$Lbs.Sold), 
+                  max(pos_promo$Lbs.Sold), 
+                  mean(pos_promo$Lbs.Sold), 
+                  median(pos_promo$Lbs.Sold),
+                  sd(pos_promo$Lbs.Sold))
+
+pos_promo_chart <- data.frame(Measure = c("Min.", "Max.", "Mean", "Median", "Std. div."),
+                          Visits = round(pos_vis, 2),
+                          Unique_Visits = round(pos_uv,2),
+                          Revenue = round(pos_rev,2),
+                          Profit = round(pos_prof,2),
+                          Lbs_Sold = round(pos_lbs,2))
+
+formattable(pos_promo_chart, align = c('l','c','c','c','c','c'), list(`Measure` = formatter(
+  "span", style = ~ style(font.weight = "bold"))))
+
+```
+
+#### As well, the mean for each period was calculated (see Table 5) and compared. What can be observed from Table 5 and Figure 5, Figure 6, and Figure 7, once again is that visits to QA website increased during the promotion period and remained the lowest during the pre-promotion period, indicating that the promotion was effective in increasing brand awareness. Notwithstanding, revenues linearly decreased from the initial period to the post-promotion period, demonstrating that the promotion seem to not have an effect in increasing sales. In addition, even though pounds sold did not significantly decreased, they are also constantly decreasing from the initial to the post-promotion period.
+
+#### <b> Table 5: Means for each Period </b>
+
+```{r means_periods, echo=FALSE, message=FALSE, warning=FALSE}
+
+#calculating means
+visits_means <- c(mean(initial$Visits), 
+                  mean(pre_promo$Visits), 
+                  mean(promo$Visits), 
+                  mean(pos_promo$Visits))
+
+unique_visits_means <- c(mean(initial$`Unique.Visits`),
+                         mean(pre_promo$`Unique.Visits`),
+                         mean(promo$`Unique.Visits`),
+                         mean(pos_promo$`Unique.Visits`))
+
+revenue_means <- c(mean(initial$Revenue),
+                   mean(pre_promo$Revenue),
+                   mean(promo$Revenue),
+                   mean(pos_promo$Revenue))
+
+profit_means <- c(mean(initial$Profit),
+                  mean(pre_promo$Profit),
+                  mean(promo$Profit),
+                  mean(pos_promo$Profit))
+
+lbs_sold_means <- c(mean(initial$`Lbs.Sold`),
+                    mean(pre_promo$`Lbs.Sold`),
+                    mean(promo$`Lbs.Sold`),
+                    mean(pos_promo$`Lbs.Sold`))
+
+#creating the column chart
+means_chart <- data.frame(Phase = c("Initial", "Pre-Promo", "Promotion", "Post-Promo"),
+                          Visits = round(visits_means, 2),
+                          Unique_Visits = round(unique_visits_means,2),
+                          Revenue = round(revenue_means,2),
+                          Profit = round(profit_means,2),
+                          Lbs_Sold = round(lbs_sold_means,2))
+
+formattable(means_chart, align = c('l','c','c','c','c','c'), list(`Phase` = formatter(
+  "span", style = ~ style(font.weight = "bold"))))
+
+# Creating bar plots
+means_chart$Phase <- factor(means_chart$Phase, levels=unique(means_chart$Phase))
+plot_3.1 <- ggplot(means_chart, aes(Phase, Visits)) +
+  geom_bar(stat="identity", fill="steelblue2") +
+  labs(title="Figure 5: Visits Mean by Period") +
+  theme(plot.title = element_text(face = "bold"))
+plot_3.1
+
+
+plot_3.3 <- ggplot(means_chart, aes(Phase, Revenue)) +
+  geom_bar(stat="identity", fill="steelblue2") +
+  labs(title=" Figure 6: Revenue Mean by Period") +
+  theme(plot.title = element_text(face = "bold"))
+plot_3.3
+
+
+plot_3.5 <- ggplot(means_chart, aes(Phase, Lbs_Sold)) +
+  geom_bar(stat="identity", fill="steelblue2") +
+  labs(title="Figure 7: Pounds Sold Mean by Period") +
+  theme(plot.title = element_text(face = "bold"))
+plot_3.5
+
+```
+
+#### In short, by observing descriptive statistics of the data it can be concluded that the promotion in fact increased visit to the website and therefore awareness about the brand, however, this effect was not translated into increased pounds sold and revenues. In fact, these two appear to be decreasing. 
+
+## <i> Relationship Between Variables </i>
+
+#### As mention, it appears that the website is not been effective in producing cells, but to factually conclude whether the website is effective, meaning that it yields more revenue, it is essential to examine the relationship between revenue and visits as well as other variables that may have an impact on revenue. Firstly, we look at the relationship between revenue and pounds sold, then at revenue and visits. By looking at these relationships it can be observed what variables are driving revenues. Further, the relationship between revenue and inquires, revenue and average time spent on the website, revenue and percentage of new visits were also observed as to gain additional insight on what variables are driving revenues.
+
+#### There is a clear linear relationship between revenue (Revenue) and pounds sold (Lbs.Sold) (see Figure 7). Also, the statistical significance of the relationships, known as the p-value (in this case of 2e-16) is in an acceptable level (smaller than 0.05). Therefore, this relationship is of statistical significance. It was found that for every extra pound sold, my revenue will increase by $24.57. The findings in this simple regression model also indicate that 75.5% (R-squared) of revenues are explained by pounds sold (<i>See Linear Regression:Pounds Sold and Revenue </i>).
+
+```{r relationships_plot, echo=FALSE, message=FALSE, warning=FALSE}
+
+#Revenue and Pounds Sold scatter plot and regression
+revenuepounds_sp <- ggplot(web1, aes(Lbs.Sold, Revenue))
+revenuepounds_sp + geom_point()+geom_smooth(method = "lm", colour="Red")+
+  labs(title = "Figure 8: Releationship - Revenue & Pounds Sold", x="Lbs. Sold", y="Revenue")
+
+```
+
+#### <b> Linear Regression: Revenue & Visists </b>
+
+```{r lm_mode_1, echo=FALSE, message=FALSE, warning=FALSE}
+
+revenuepounds_lm <- lm(Revenue ~ Lbs.Sold, data= web1)
+summary(revenuepounds_lm)
+
+```
+#### Furthermore, a simple regression model and a scatter plot between revenue (Revenue) and visits (Visits) does not show a clear relationship (see Figure 9). In the regression, it can be observed that only 0.35% of revenues seemed to be explained by website visits. However, the relationship between these variables has no statistical significance (p-value of 0.636). Given these insights, it can be inferred as suspected, that the website is not currently effective in driving revenue. What is causing this to be the case if however unknown. Regardless, it is indisputable that in the “Digital Era” companies need a website to make their content available, especially as the company seeks to increase sells, make their information available and expand their business. The website should remain a key effort in contributing towards these goals, however a more cohesive strategy should be developed to ensure that the website yields value and targets the right customers.
+
+```{r rev_vis_plot, echo=FALSE, message=FALSE, warning=FALSE}
+revenuevisits_sp <- ggplot(web1, aes(Visits, Revenue))
+revenuevisits_sp + geom_point()+geom_smooth(method = "lm", colour="Red")+
+  labs(title= "Figure 9: Relationsip - Revenue & Visits", x="Visits", y="Revenue")
+
+```
+
+#### <b> Linear Regression: Revenue & Visists </b>
+```{r lm_mode_2, echo=FALSE, message=FALSE, warning=FALSE}
+
+revenuevisits_lm <- lm(Revenue ~ Visits, data= web1)
+summary(revenuevisits_lm)
+
+```
+
+#### As stated, revenues and website visit do not seem to have a statistically significant correlation, while revenues and pounds sold do. To understand what other variables may be driving revenues, the relationship between it and other variables was also examined:
+
+#### <b>Revenue (Revenue) and inquiries (Inquiries):</b> One would have expected that revenues and inquiries have a statistical significance relationship. However, according to the data, this is not the case.  Inquiries can be made via the website or by directly contacting the Quality Alloys. What the lack of statistical relationship means is that inquiries are not necessarily resulting in sales. This in turn represent an area where the sales team can improve – converting inquiries into sales to yield greater revenue. As well it appears that there is no relationship between visits and inquiries, meaning that most inquiries are not been done through the website.
+
+#### <b>Revenue (Revenue) and average time spent on the website (Time.site.sec):</b> It appears that these two variables have a stronger relationship (p-value 0.054), and 5.67% of revenues can be explained by the time people spend on the site. As previously explained revenues and visit do not appear to have a significant relationship, however the time people spend on the site slightly does. This means that the more time people spend on the website, the more likely they are to purchase Quality Alloy products.
+
+#### <b>Revenue (Revenue) and percentage of new visits (New.Visits):</b> There is a weak and negative relationship between these two variables (p-values 0.081). Even if this relationship is not statistically significant as to make strong assumptions, it also represents a space for improvement, a relationship does not necessarily needs to be present between these two, however it would have been expected that there is a positive relationship between these two (new visits more revenue). As well there is no <b>relationship between new visits and inquiries </b>, meaning that newcomers to the website are not submitting inquiries. This represents an area of improvement.
+
+```{r other_plots, echo=FALSE, message=FALSE, warning=FALSE}
+
+# Revenue vs Inquiries
+
+inrev_sp <- ggplot(web1, aes(Inquiries, Revenue))
+inrev_sp + geom_point()+geom_smooth(method = "lm", colour="Red")+
+  labs(title="Figure 10: Relationship & Linear Regression- Revenue & Inquiries", x="Inquiries", y="Revenue")
+
+inrev_lm <- lm(Revenue ~ Inquiries, data= web1)
+summary(inrev_lm)
+
+
+#Inquiries vs Visits
+invisits_sp <- ggplot(web1, aes(Visits, Inquiries))
+invisits_sp + geom_point()+geom_smooth(method = "lm", colour="Red")+
+  labs(title= "Figure 11: Relationship & Linear Regression - Inquiries & Visits", x="Visits", y="Inquiries")
+
+invisits_lm <- lm(Inquiries ~ Visits, data= web1)
+summary(invisits_lm)
+
+#inquiries vs pages view
+
+inpage_sp <- ggplot(web1, aes(Pageviews, Inquiries))
+inpage_sp + geom_point()+geom_smooth(method = "lm", colour="Red")+
+  labs(title= "Figure 12: Relationship & Linear Regression - Inquiries & Page Views",x="Pageviews", y="Inquiries")
+
+inpage_lm <- lm(Inquiries ~ Pageviews, data= web1)
+summary(inpage_lm)
+
+
+#Revenue vs Avg time on site
+
+revtime_sp <- ggplot(web1, aes(Time.site.sec, Revenue))
+revtime_sp + geom_point()+geom_smooth(method = "lm", colour="Red")+
+  labs(title= "Figure 13: Relationship & Linear Regression - Revenue & Average Time Spent on Site (in seconds)",x="Time.site.sec", y="Revenue")
+
+revtime_lm <- lm(Revenue ~ Time.site.sec, data= web1)
+summary(revtime_lm)
+
+
+#Revenue vs New Visits 
+
+revnew_sp <- ggplot(web1, aes(New.Visits, Revenue))
+revnew_sp + geom_point()+geom_smooth(method = "lm", colour="Red")+
+  labs(title= "Figure 14: Relationship & Linear Regression - Revenue & New Visits",x="New.Visits", y="Revenue")
+
+revnew_lm <- lm(Revenue ~ New.Visits, data= web1)
+summary(revnew_lm)
+
+#Inquiries vs New Visits 
+
+inqnew_sp <- ggplot(web1, aes(New.Visits, Inquiries))
+inqnew_sp + geom_point()+geom_smooth(method = "lm", colour="Red")+
+  labs(title= "Figure 15: Relationship & Linear Regression - Inquiries & New Visits",x="New.Visits", y="Inquiries")
+
+inqnew_lm <- lm(Inquiries ~ New.Visits, data= web1)
+summary(inqnew_lm)
+
+
+```
+
+#### Multiple Regression Model:  A multiple regression model was developed with those variables that showed to have stronger relationship to revenue, namely pounds sold, and time spent on website. These two variables explain 76.8% of the revenue and can be used to predict revenue 
+
+#### <b> Multiple Regression Model </b>
+```{r mr_model, echo=FALSE, message=FALSE, warning=FALSE}
+# Multiple Regression 
+
+mregression <- lm(Revenue ~ Lbs.Sold+Time.site.sec,data=web1) 
+
+mregression$coefficients
+summary(mregression)
+
+# MRM
+MRM <- function(inter, beta1, x1, beta2, x2){
+  equation_mrm <- inter + beta1 * x1 + beta2 * x2 + beta3 * x3 + beta4 * x4
+  return(equation_mrm)
+}
+
+```
+#### Continuing with the analysis, data from pound sold during the period of January 3, 2005, through the week of July 19, 2010 was analyzed. Understanding the behavior of pounds sold, can give insights and depending on the distribution of the data, it can perhaps be used to model future pound sold. Figure 16 shows a histogram with the frequency of the quantity of material sold during the above-mentioned period. Despite the financial crisis in 2008 mean pounds sold seem to remain constant from 2005 (pre-crisis)to 2010 (post-crisis) but revenues appear to be decreasing, indicating that even as pounds sold remain more or less constant revenues are declining.
+
+```{r dist_time, echo=FALSE, message=FALSE, warning=FALSE}
+
+web3$Year <- c(format(as.Date(web3$Week, format="%Y/%m/%d"),"%Y"))
+
+barra_n <- ggplot(web3, aes(Year, `Lbs.Sold`))
+barra_n + stat_summary(fun.y = mean, geom = 'bar', fill = 'orange')+
+  labs(title="Figure 15: Bar Chart & Descriptive Statistics - Pounds Sold each Year")
+
+summary(web3$`Lbs.Sold`)
+
+
+
+plot_3.3 <- ggplot(means_chart, aes(Phase, Revenue)) +
+  geom_bar(stat="identity", fill="orange") +
+  labs(title=" Figure 16:Bar Chart & Descriptive Statistics - Revenue 2008-2009 (by period)")
+plot_3.3
+
+summary(web2$Revenue)
+
+```
+#### Finally, pounds sold and daily visits where compered. It was found that increasing the number of visits does not increases the number of pounds sold (Figure 17 and Figure 18) (Period where distributed as follow -  Initial: 0~14, pre-promo: 15~35, promo: 22~52, post-promo: 53~66). During the promotion period, number of visits peeked, but promotion did not affect pounds sold. As well pounds sold seem to fluctuate continuously with the time (but mean pounds sold by year remain more or less constant). This can perhaps be related to the fact that QA customers do no inventory. 
+
+```{r plot_lbs_rev, echo=FALSE, message=FALSE, warning=FALSE}
+v <- web1$Visits
+t <- web1$Lbs.Sold
+
+# Plot the bar chart
+
+plot(v,type = "o", col = "red", title="Figure 17: Visits Pattern Over Periods", xlab = "Period", ylab = "Visits",
+     main = "Visits chart")
+
+plot(t,type = "o", col = "blue", title="Figure 18: Pound Solds Pattern Over Periods", xlab = "Period", ylab = "Pounds Sold",
+     main = "Lbs.Sold chart")
+
+```
+
+## <i> Conslusion and Recomendations </i>
+
+#### As mention it can be concluded that the website is not currently as effective as it should be, and the investment in the promotion did not added value to the company. Neither Inquiries are arriving through the website nor are they being transformed into revenues by the sales team. The only two variables that appear to be driving revenues are pound sold, and to a lesser extend time spend on the website. The later may be attributed that the people that ended purchasing spend more time finding the materials they want. 
+
+#### As well, by looking at demographic data, it was observed that referring sites drive the most traffic followed by search engines search. Also, most visits, 45% come from South America and Central America, followed by North America 27%, Europe 17%, Southern, Eastern and South-east  Asia 12%. If they intended to expand to Asia, particularly to the Pacific Rim, QA should begin focusing on increasing brand awareness in Asia. 
+
+#### <i>Recomendations </i>
+
+#### 1) No more money should be spent printing and mailing brochures. The promotional period increased traffic to the website but it did not yield sales and therefore there is no observable return on investment from this strategy and should be abandoned.
+#### 2) QA should retain the website. Websites are an essential tool for any company that seeks to thrive in the 21st century.  An A/B test that includes a “shopping cart” can be used to test if a direct check out can increase sales. This can drive does customers that spent significant amount of time on the website to be even more likely to purchase. As well, this concept could help convert visitors into customers. This is particularly useful for selling in small quantities.  
+#### 3) The investment currently done in referring sites and search engines should be preserved, especially from listing sites like GlobalSpec and ThomasNet.com. Even though Google brings more visits to the website that these two listings, it can be consider that this long-standing listing are yielding actual sales compart to just visits. Based on the data it appears that new searches are not yielding sales, therefore it can be considered that these sites may target the right customers rather than just a lot of people. However continuing efforts on search engines like google and yahoo as these drive the most visits to the website and therefore have the potential to increase brand awareness (yield potential sales) and make the company’s contact information available.
+#### 4) To target the Asian market (as desired), QA should advertise on search engines such as Baidu or other search engines that are used in the region, as currently most searches are done from engines not used in the region
+#### 5) Engage in an online/email promotional campaign particularly targeting Asia customers so as to increase web traffic and sales from this region. As observed in the analysis, promotional campaigns drive web traffic, and even visits do no necessary yield sales, it can increase brand awareness which can be a good move as QA seeks to expand to the Pacific Rim.  This promotional campaigned should be tied to efforts in recommendation # 2, #4.
+#### 6) Inquiries, which are not happening through the website, are not resulting in sales. This means that the sales team are not closing sales after a potential customer has reach out. Offering new training for the sales team will be imperative for increasing sales.
+
+
+#### <i>References </i>
+##### Weitz, R., & Rosenthal, D. (2011). Web Analytics at Quality Alloys, Inc. Columbia Case Works, Columbia Business School.
+
+## Carolina Duque Chopitea
+### cduquechopitea@gmail.com
